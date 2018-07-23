@@ -67,7 +67,9 @@ namespace MasterMindGame
         /// <returns>True if all solution matches the Users Guess false, if any do not match</returns>
         private static bool CompareUserGuessToGeneratedNumber(int[] solutionResult, int[] userGuess)
         {
-            bool matches = true;
+            bool matches = false;
+            var matchCount = 0;
+
             StringBuilder result = new StringBuilder();
             result.Append("|");
 
@@ -76,19 +78,22 @@ namespace MasterMindGame
                 if (solutionResult[i] == userGuess[i])
                 {
                     result.Append("+");
-                    matches = true;
+                    matchCount++;
                 }
                 else if (solutionResult.Contains(userGuess[i]))
                 {
                     //Does solution contain the current digit in user guess?
                     result.Append("-");
-                    matches = false;
                 }
                 else
                 {
                     result.Append(" ");
-                    matches = false;
                 }
+            }
+
+            if(matchCount == 4)
+            {
+                matches = true;
             }
 
             result.Append("|");
