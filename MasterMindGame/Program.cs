@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MasterMindGame
 {
@@ -14,6 +12,9 @@ namespace MasterMindGame
     //What functionality do you want if the guesses are out of bounds (Not between 1 and 6). Assumption is invalidate the entire guess and make them do it again
     //What error message should you return if the numbers are not between 1 and 6
     //After the game is complete, should we stop the game or should we add a play again workflow?
+    //TODO: Refactor and break stuff out into helper and utility classes
+    //TODO: Add unit Tests and look into making methods internal or even public.
+    //TODO: Write Scenario's for testing
 
     class Program
     {
@@ -27,6 +28,10 @@ namespace MasterMindGame
         /// </summary>
         private static int NumberOfAttempts = 10;
 
+        /// <summary>
+        /// Main Program
+        /// </summary>
+        /// <param name="args"></param>
         public static void Main(string[] args)
         {
             Console.WriteLine("**Play Master-Mind Game***\n");
@@ -113,10 +118,10 @@ namespace MasterMindGame
             //Loop needs to keep track of attempts and if the user guessed correctly.
             for (int i = NumberOfAttempts; i > 0 && !bWon; i--)
             {
-                int[] userTest = { 1, 2, 3, 4 };
-                //int[] TestMatch = { 1, 2, 3, 4 };
+                Console.WriteLine("\nEnter your guess ({0} guesses remaining)", i);
+                var userGuess = ReadAndValidateUserGuess(MaxLengthOfGuess);
 
-                if (CompareUserGuessToGeneratedNumber(solutionResult, userTest))
+                if (CompareUserGuessToGeneratedNumber(solutionResult, userGuess))
                 {
                     bWon = true;
                 }
@@ -136,6 +141,63 @@ namespace MasterMindGame
             //{
             //    Console.Write(solutionResult[j]);
             //}
+        }
+
+        /// <summary>
+        /// Read and validation to check if user guess is between 1 and 6 and is 4 numbers in length
+        /// </summary>
+        /// <param name="userGuessLength"></param>
+        /// <returns>Int Array of the User Guess</returns>
+        private static int[] ReadAndValidateUserGuess(int userGuessLength)
+        {
+            var validInput = false;
+            int[] userGuess = new int[userGuessLength];
+
+            do
+            {
+                bool invalidNumber = false;
+                string input = Console.ReadLine();
+
+                if (input.Length != 4)
+                {
+                    Console.Write("Invalid Length\n");
+                }
+                else
+                {
+                    var charArray = input.ToCharArray();
+
+                    //TODO: Look to convert to method to make testing easier. Util class? Unit testing can be made much simpler by refactoring this
+                    foreach (char validateToInt in charArray)
+                    {
+                        if (!int.TryParse(validateToInt.ToString(), out int number))
+                        {
+                            invalidNumber = true;
+                            break;
+                        }
+
+                        //Number must be between 1-6
+                        if (number > 6 || number < 1)
+                        {
+                            invalidNumber = true;
+                            break;
+                        }
+                    }
+
+                    if (!invalidNumber)
+                    {
+                        userGuess = charArray.Select(c => Convert.ToInt32(c.ToString())).ToArray();
+
+                        validInput = true;
+                    }
+                    else
+                    {
+                        Console.Write("Invalid Input Try Again\n");
+                    }
+                }
+            }
+            while (!validInput);
+
+            return userGuess;
         }
     }
 }
