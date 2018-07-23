@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace MasterMindGame
 {
+
+
+    //Quesitons: 
+    //What do you want the result to be if user correctly guessed the number? What message to display?
+
+
     class Program
     {
         /// <summary>
@@ -15,8 +21,14 @@ namespace MasterMindGame
 
         public static void Main(string[] args)
         {
+            Console.WriteLine("**Play Master-Mind Game***\n");
+            Console.WriteLine("We generated a random 4-digit number. The possible values are between the numbers 1 to 6.\n");
 
             int[] test = GenerateRandomNumbers();
+
+            int[] userTest = { 1, 2, 3, 4 };
+
+            CompareUserGuessToGeneratedNumber(test, userTest);
 
             Console.ReadLine();
         }
@@ -38,6 +50,30 @@ namespace MasterMindGame
             }
 
             return randomNumber;
+        }
+
+        private static void CompareUserGuessToGeneratedNumber(int[] solutionResult, int[] userGuess)
+        {
+            StringBuilder result = new StringBuilder();
+
+            for (int i = 0; i < solutionResult.Length; i++)
+            {
+                if (solutionResult[i] == userGuess[i])
+                {
+                    result.Append("+");
+                }
+                else if (solutionResult.Contains(userGuess[i]))
+                {
+                    //Does solution contain the current digit in user guess?
+                    result.Append("-");
+                }
+                else
+                {
+                    result.Append(" ");
+                }
+            }
+
+            Console.WriteLine("Results: " + result);        
         }
     }
 }
